@@ -68,6 +68,10 @@ install() {
 
   if [ "$(os::has_command systemctl)" = "true" ]; then
     log::info "[$(timestamp)][package][$name] starting containerd service with systemd ..."
+    if [ ! -d "/usr/local/lib/systemd/system" ]; then
+      sudo mkdir -p /usr/local/lib/systemd/system
+    fi
+    
     sudo cp $PACKAGE_DIR/conf/containerd.service /usr/local/lib/systemd/system/containerd.service \
       && sudo systemctl daemon-reload \
       && sudo systemctl enable --now containerd
