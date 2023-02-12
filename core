@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# reference:
+#   https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+#
 install() {
   # prepare vars
   local name="$PACKAGE_CORE_NAME"
@@ -60,31 +63,20 @@ install() {
   # files: bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,containerd-stress,ctr}
   # sudo mv ./bin/* $usr_bin_dir
 
-  # Complex like maven-mvnd
-  #   # make executable
-  #   log::info "[$(timestamp)][package][$name] making executable ..."
-  #   chmod 755 $bin_file
+  # @TODO add ln to /usr/local/bin for containerd.service
+  sudo ln -sf /usr/bin/containerd /usr/local/bin/containerd
 
-  #   # install
-  #   if [ -d "$usr_lib_dir/${name}" ]; then
-  #     log::info "[$(timestamp)][package][$name] removing old lib ..."
-  #     sudo rm -rf $usr_lib_dir/${name}
-  #   fi
-  #   log::info "[$(timestamp)][package][$name] installing lib ..."
-  #   sudo mv $lib_dir $usr_lib_dir/${name}
-
-  #   # install
-  #   log::info "[$(timestamp)][package][$name] installing bin ..."
-  #   sudo ln -sf $usr_lib_dir/${name}/bin/${PACKAGE_CORE_BIN_NAME} $usr_bin_dir/${PACKAGE_CORE_BIN_NAME}
-
-  #   # profile
-  #   log::success "[$(timestamp)][package][$name] config MVND_HOME=$usr_lib_dir/${name} to global env file ..."
-  #   local envs=$(
-  #     cat <<-END
-  # export MVND_HOME=$usr_lib_dir/${name}
-  # END
-  # )
-  #   config::profile "# ZMICRO PACKAGE MAVEN-MVND" "$envs"
+  if [ "$(os::has_command systemctl)" = "true" ]; then
+    log::info "[$(timestamp)][package][$name] starting containerd service with systemd ..."
+    sudo cp $PACKAGE_DIR/conf/containerd.service /usr/local/lib/systemd/system/containerd.service \
+      && sudo systemctl daemon-reload \
+      && sudo systemctl enable --now containerd
+    if [ "$?" != "0" ]; then
+      log::error "[$(timestamp)][package][$name] failed to start containerd service with systemd."
+      return 1
+    fi
+    log::success "[$(timestamp)][package][$name] succeed to start containerd service with systemd."
+  fi
 
   # clean
   log::info "[$(timestamp)][package][$name] cleaning ..."
