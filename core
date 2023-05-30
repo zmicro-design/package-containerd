@@ -59,11 +59,11 @@ install() {
 
   # install
   log::info "[$(timestamp)][package][$name] installing ..."
-  os::install $bin_file $usr_bin_dir
+  # os::install $bin_file $usr_bin_dir
   # install ctr
-  os::install ./bin/ctr $usr_bin_dir
+  # os::install ./bin/ctr $usr_bin_dir
   # files: bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,containerd-stress,ctr}
-  # sudo mv ./bin/* $usr_bin_dir
+  sudo mv ./bin/* $usr_bin_dir
 
   # @TODO add ln to /usr/local/bin for containerd.service
   sudo ln -sf /usr/bin/containerd /usr/local/bin/containerd
