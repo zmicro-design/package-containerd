@@ -6,11 +6,20 @@ help() {
   echo ""
 }
 
+depends() {
+  which runc >> /dev/null 2>&1
+  if [ "$?" != "0" ]; then
+    zmicro package install runc
+  fi
+}
+
 core() {
   if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     help
     exit 0
   fi
+
+  depends
 
   install
   if [ $? -eq 0 ]; then
