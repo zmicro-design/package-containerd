@@ -2,6 +2,7 @@
 
 # reference:
 #   https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+#   https://blog.frognew.com/2023/12/kubeadm-install-kubernetes-1.29.html
 #
 install() {
   # prepare vars
@@ -68,19 +69,36 @@ install() {
   # @TODO add ln to /usr/local/bin for containerd.service
   sudo ln -sf /usr/bin/containerd /usr/local/bin/containerd
 
+  # @TODO config
+  local containerd_config_dir="/etc/containerd"
+  local containerd_config_file="$containerd_config_dir/config.toml"
+  if [ ! -f "$containerd_config_file" ]; then
+    sudo mkdir -p /etc/containerd
+    sudo containerd config default > $containerd_config_file
+  fi
+
   if [ "$(os::has_command systemctl)" = "true" ]; then
     log::info "[$(timestamp)][package][$name] starting containerd service with systemd ..."
-    if [ ! -d "/usr/local/lib/systemd/system" ]; then
-      sudo mkdir -p /usr/local/lib/systemd/system
+    local systemd_dir="/etc/systemd/system"
+    if [ ! -d "${systemd_dir}" ]; then
+      sudo mkdir -p ${systemd_dir}
     fi
     
-    sudo cp $PACKAGE_DIR/conf/containerd.service /usr/local/lib/systemd/system/containerd.service \
+    log::info "[$(timestamp)][package][$name] copying containerd.service to ${systemd_dir}/containerd.service ..."
+    sudo cp $PACKAGE_DIR/conf/containerd.service ${systemd_dir}/containerd.service \
       && sudo systemctl daemon-reload \
       && sudo systemctl enable --now containerd
     if [ "$?" != "0" ]; then
       log::error "[$(timestamp)][package][$name] failed to start containerd service with systemd."
       return 1
     fi
+
+    log::info "[$(timestamp)][package][$name] checking containerd service status ..."
+    sudo systemctl status containerd
+
+    log::info "[$(timestamp)][package][$name] checking containerd version with ctr ..."
+    sudo ctr --address /var/run/containerd/containerd.sock version version
+
     log::success "[$(timestamp)][package][$name] succeed to start containerd service with systemd."
   fi
 
