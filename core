@@ -69,6 +69,22 @@ install() {
   # @TODO add ln to /usr/local/bin for containerd.service
   sudo ln -sf /usr/bin/containerd /usr/local/bin/containerd
 
+  # kernel modules
+  #   reference: https://blog.frognew.com/2023/12/kubeadm-install-kubernetes-1.29.html
+  if [ ! -f "/etc/modules-load.d/containerd.conf" ]; then
+    cp $PACKAGE_DIR/conf/etc/modules-load.d/containerd.conf /etc/modules-load.d/containerd.conf
+  fi
+  log::info "[$(timestamp)][package][$name] loading kernel modules ..."
+  modprobe overlay
+  modprobe br_netfilter
+
+  # kernel configs
+  if [ ! -f "/etc/sysctl.d/99-kubernetes-cri.conf" ]; then
+    cp $PACKAGE_DIR/conf/etc/sysctl.d/99-kubernetes-cri.conf /etc/sysctl.d/99-kubernetes-cri.conf
+  fi
+  log::info "[$(timestamp)][package][$name] apply kernel configs ..."
+  sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
+
   # @TODO config
   local containerd_config_dir="/etc/containerd"
   local containerd_config_file="$containerd_config_dir/config.toml"
