@@ -16,6 +16,11 @@ depends() {
     zmicro package install cni-plugins
   fi
 
+  # crictl is required for kubeadm
+  if [ "$(os::has_command crictl)" != "true" ]; then
+    zmicro package install crictl
+  fi
+
   # nerdctl is required
   if [ "$(os::has_command nerdctl)" != "true" ]; then
     zmicro package install nerdctl
