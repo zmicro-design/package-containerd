@@ -75,15 +75,15 @@ install() {
     cp $PACKAGE_DIR/conf/etc/modules-load.d/containerd.conf /etc/modules-load.d/containerd.conf
   fi
   log::info "[$(timestamp)][package][$name] loading kernel modules ..."
-  modprobe overlay
-  modprobe br_netfilter
+  sudo modprobe overlay
+  sudo modprobe br_netfilter
 
   # kernel configs
   if [ ! -f "/etc/sysctl.d/99-kubernetes-cri.conf" ]; then
     cp $PACKAGE_DIR/conf/etc/sysctl.d/99-kubernetes-cri.conf /etc/sysctl.d/99-kubernetes-cri.conf
   fi
   log::info "[$(timestamp)][package][$name] apply kernel configs ..."
-  sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
+  sudo sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
 
   # @TODO config
   local containerd_config_dir="/etc/containerd"
@@ -91,7 +91,7 @@ install() {
   if [ ! -f "$containerd_config_file" ]; then
     sudo mkdir -p /etc/containerd
     # sudo containerd config default > $containerd_config_file
-    cp $PACKAGE_DIR/conf/config.toml $containerd_config_file
+    sudo cp $PACKAGE_DIR/conf/config.toml $containerd_config_file
   fi
 
   if [ "$(os::has_command systemctl)" = "true" ]; then
