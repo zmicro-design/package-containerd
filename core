@@ -74,7 +74,8 @@ install() {
   local containerd_config_file="$containerd_config_dir/config.toml"
   if [ ! -f "$containerd_config_file" ]; then
     sudo mkdir -p /etc/containerd
-    sudo containerd config default > $containerd_config_file
+    # sudo containerd config default > $containerd_config_file
+    cp $PACKAGE_DIR/conf/config.toml $containerd_config_file
   fi
 
   if [ "$(os::has_command systemctl)" = "true" ]; then
