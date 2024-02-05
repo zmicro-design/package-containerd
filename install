@@ -7,8 +7,7 @@ help() {
 }
 
 depends() {
-  which runc >> /dev/null 2>&1
-  if [ "$?" != "0" ]; then
+  if [ "$(os::has_command runc)" != "true" ]; then
     zmicro package install runc
   fi
 }
