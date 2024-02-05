@@ -94,10 +94,10 @@ install() {
     fi
 
     log::info "[$(timestamp)][package][$name] checking containerd service status ..."
-    sudo systemctl status containerd
+    sudo systemctl status --no-pager containerd
 
     log::info "[$(timestamp)][package][$name] checking containerd version with ctr ..."
-    sudo ctr --address /var/run/containerd/containerd.sock version version
+    sudo ctr --address /var/run/containerd/containerd.sock version
 
     log::success "[$(timestamp)][package][$name] succeed to start containerd service with systemd."
   fi
