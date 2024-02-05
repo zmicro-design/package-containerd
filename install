@@ -10,6 +10,16 @@ depends() {
   if [ "$(os::has_command runc)" != "true" ]; then
     zmicro package install runc
   fi
+
+  # cni-plugins is required
+  if [ ! -d "/opt/cni/bin" ]; then
+    zmicro package install cni-plugins
+  fi
+
+  # nerdctl is required
+  if [ "$(os::has_command nerdctl)" != "true" ]; then
+    zmicro package install nerdctl
+  fi
 }
 
 core() {
