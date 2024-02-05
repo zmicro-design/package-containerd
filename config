@@ -2,5 +2,5 @@
 
 export PACKAGE_CORE_NAME="containerd"
 export PACKAGE_CORE_BIN_NAME="$PACKAGE_CORE_NAME"
-export PACKAGE_CORE_VERSION=v1.7.1
+export PACKAGE_CORE_VERSION=v1.7.13
 export PACKAGE_CORE_RELEASE_DOWNLOAD="https://github.com/containerd/containerd/releases/download"
