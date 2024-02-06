@@ -94,6 +94,18 @@ install() {
     sudo cp $PACKAGE_DIR/conf/config.toml $containerd_config_file
   fi
 
+  # CNI config
+  #   issue: KubeletNotReady container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialize
+  #   reference: https://github.com/kubernetes/website/blob/dev-1.24/content/en/docs/tasks/administer-cluster/migrating-from-dockershim/troubleshooting-cni-plugin-related-errors.md
+  local cni_config_dir="/etc/cni/net.d"
+  local cni_config_file="$cni_config_dir/10-containerd-net.conflist"
+  if [ ! -d "$cni_config_dir" ]; then
+    sudo mkdir -p $cni_config_dir
+  fi
+  if [ ! -f "$cni_config_file" ]; then
+    sudo cp $PACKAGE_DIR/conf/10-containerd-net.conflist $cni_config_file
+  fi
+
   if [ "$(os::has_command systemctl)" = "true" ]; then
     log::info "[$(timestamp)][package][$name] starting containerd service with systemd ..."
     local systemd_dir="/etc/systemd/system"
