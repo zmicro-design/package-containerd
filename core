@@ -96,7 +96,10 @@ install() {
 
   # CNI config
   #   issue: KubeletNotReady container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialize
-  #   reference: https://github.com/kubernetes/website/blob/dev-1.24/content/en/docs/tasks/administer-cluster/migrating-from-dockershim/troubleshooting-cni-plugin-related-errors.md
+  #   reference: 
+  #     - https://github.com/kubernetes/website/blob/dev-1.24/content/en/docs/tasks/administer-cluster/migrating-from-dockershim/troubleshooting-cni-plugin-related-errors.md
+  #     - https://github.com/containerd/containerd/blob/main/script/setup/install-cni
+  #     - https://github.com/containerd/containerd?tab=readme-ov-file
   local cni_config_dir="/etc/cni/net.d"
   local cni_config_file="$cni_config_dir/10-containerd-net.conflist"
   if [ ! -d "$cni_config_dir" ]; then
