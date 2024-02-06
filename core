@@ -103,7 +103,7 @@ install() {
     sudo mkdir -p $cni_config_dir
   fi
   if [ ! -f "$cni_config_file" ]; then
-    sudo cp $PACKAGE_DIR/conf/10-containerd-net.conflist $cni_config_file
+    sudo cp $PACKAGE_DIR/conf/etc/cni/net.d/10-containerd-net.conflist $cni_config_file
   fi
 
   if [ "$(os::has_command systemctl)" = "true" ]; then
