@@ -3,6 +3,7 @@
 # reference:
 #   https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 #   https://blog.frognew.com/2023/12/kubeadm-install-kubernetes-1.29.html
+#   无坑部署最小化K8S集群 - https://www.escapelife.site/posts/180e93f1.html
 #
 install() {
   # prepare vars
